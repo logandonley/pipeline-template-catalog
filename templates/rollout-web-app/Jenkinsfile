@@ -1,0 +1,44 @@
+library 'cb-days@GA-Rollout'
+pipeline {
+  agent none
+  options { 
+    buildDiscarder(logRotator(numToKeepStr: '2'))
+    skipDefaultCheckout true
+    preserveStashes(buildCount: 2)
+  }
+  environment {
+    repoOwner = "${repoOwner}"
+    credId = "${githubCredentialId}"
+  }
+  stages {
+    stage('Build and Push Image') {
+      when {
+        beforeAgent true
+        branch 'master'
+      }
+      steps {  
+        echo "${repoOwner}"
+        rollout-kanikoBuildPush("rollout-js", env.IMAGE_TAG, "${gcpProject}") {
+          checkout scm
+        }
+        rollout-kanikoBuildPush("rollout-java", env.IMAGE_TAG, "${gcpProject}") {
+          checkout scm
+        }
+      }
+    }
+    stage('Deploy') {
+      when {
+        beforeAgent true
+        branch 'master'
+      }
+      // options {
+      //   timeout(time: 60, unit: 'SECONDS') 
+      // }
+      steps {
+        //input(message: "Should we deploy?", ok: "Deploy", submitterParameter: "APPROVER")
+        rollout-kubeDeploy("rollout-js", env.IMAGE_TAG, "${githubCredentialId}", "${repoOwner}")
+        rollout-kubeDeploy("rollout-java", env.IMAGE_TAG, "${githubCredentialId}", "${repoOwner}")
+      }
+    }   
+  }
+}
