@@ -14,7 +14,7 @@ parameters:
   - name: githubCredentialId
     displayName: GitHub Credential ID
     type: CREDENTIALS
-    defaultValue: cbdays-github-token
+    defaultValue: github-avsyug
   - name: gcpProject
     type: string
     displayName: GCP Project
@@ -22,7 +22,7 @@ parameters:
 multibranch:
   branchSource:
     github:
-      id: rRollout-Workshop-Final
+      id: Rollout-Workshop-Final
       credentialsId: ${githubCredentialId}
       repoOwner: ${repoOwner}
       repository: 'Rollout-Workshop-Final'
