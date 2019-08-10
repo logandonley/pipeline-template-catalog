@@ -18,10 +18,12 @@ pipeline {
       }
       steps { 
         script{
-          rollout-kanikoBuildPush("rollout-js", env.IMAGE_TAG, "${gcpProject}") {
+          echo("Pre rolloutKanikoBuildPush #1")
+          rolloutKanikoBuildPush("rollout-js", env.IMAGE_TAG, "${gcpProject}") {
             checkout scm
           }
-          rollout-kanikoBuildPush("rollout-java", env.IMAGE_TAG, "${gcpProject}") {
+          echo("Pre rolloutKanikoBuildPush #2")
+          rolloutKanikoBuildPush("rollout-java", env.IMAGE_TAG, "${gcpProject}") {
             checkout scm
           }
         }
@@ -34,8 +36,10 @@ pipeline {
       }
       steps {
         script{
-          rollout-kubeDeploy("rollout-js", env.IMAGE_TAG, "${githubCredentialId}", "${repoOwner}")
-          rollout-kubeDeploy("rollout-java", env.IMAGE_TAG, "${githubCredentialId}", "${repoOwner}")
+          echo("rolloutKubeDeploy #1")
+          rolloutKubeDeploy("rollout-js", env.IMAGE_TAG, "${githubCredentialId}", "${repoOwner}")
+          echo("rolloutKubeDeploy #2")
+          rolloutKubeDeploy("rollout-java", env.IMAGE_TAG, "${githubCredentialId}", "${repoOwner}")
         } 
       }
     }   
