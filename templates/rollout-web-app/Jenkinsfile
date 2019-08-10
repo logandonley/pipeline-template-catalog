@@ -1,4 +1,4 @@
-library 'cb-days@master'
+library 'cb-days@GA-Rollout'
 pipeline {
   agent none
   options { 
@@ -17,7 +17,6 @@ pipeline {
         branch 'master'
       }
       steps {  
-        echo "${repoOwner}"
         rollout-kanikoBuildPush("rollout-js", env.IMAGE_TAG, "${gcpProject}") {
           checkout scm
         }
@@ -31,11 +30,7 @@ pipeline {
         beforeAgent true
         branch 'master'
       }
-      // options {
-      //   timeout(time: 60, unit: 'SECONDS') 
-      // }
       steps {
-        //input(message: "Should we deploy?", ok: "Deploy", submitterParameter: "APPROVER")
         rollout-kubeDeploy("rollout-js", env.IMAGE_TAG, "${githubCredentialId}", "${repoOwner}")
         rollout-kubeDeploy("rollout-java", env.IMAGE_TAG, "${githubCredentialId}", "${repoOwner}")
       }
