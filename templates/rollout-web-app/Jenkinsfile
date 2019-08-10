@@ -31,8 +31,10 @@ pipeline {
         branch 'master'
       }
       steps {
-        rollout-kubeDeploy("rollout-js", env.IMAGE_TAG, "${githubCredentialId}", "${repoOwner}")
-        rollout-kubeDeploy("rollout-java", env.IMAGE_TAG, "${githubCredentialId}", "${repoOwner}")
+        script{
+          rollout-kubeDeploy("rollout-js", env.IMAGE_TAG, "${githubCredentialId}", "${repoOwner}")
+          rollout-kubeDeploy("rollout-java", env.IMAGE_TAG, "${githubCredentialId}", "${repoOwner}")
+        } 
       }
     }   
   }
