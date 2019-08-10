@@ -16,12 +16,14 @@ pipeline {
         beforeAgent true
         branch 'master'
       }
-      steps {  
-        rollout-kanikoBuildPush("rollout-js", env.IMAGE_TAG, "${gcpProject}") {
-          checkout scm
-        }
-        rollout-kanikoBuildPush("rollout-java", env.IMAGE_TAG, "${gcpProject}") {
-          checkout scm
+      steps { 
+        script{
+          rollout-kanikoBuildPush("rollout-js", env.IMAGE_TAG, "${gcpProject}") {
+            checkout scm
+          }
+          rollout-kanikoBuildPush("rollout-java", env.IMAGE_TAG, "${gcpProject}") {
+            checkout scm
+          }
         }
       }
     }
