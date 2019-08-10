@@ -1,4 +1,4 @@
-library 'cb-days@GA-Rollout'
+library 'cb-days@master'
 pipeline {
   agent none
   options { 
