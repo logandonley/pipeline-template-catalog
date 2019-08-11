@@ -16,13 +16,16 @@ pipeline {
         beforeAgent true
         branch 'master'
       }
-      steps {  
-        echo "${repoOwner}"
-        rollout-kanikoBuildPush("rollout-js", env.IMAGE_TAG, "${gcpProject}") {
-          checkout scm
-        }
-        rollout-kanikoBuildPush("rollout-java", env.IMAGE_TAG, "${gcpProject}") {
-          checkout scm
+      steps { 
+        script{
+          echo("Pre rolloutKanikoBuildPush #1")
+          rolloutKanikoBuildPush("rollout-js", env.IMAGE_TAG, "${gcpProject}") {
+            checkout scm
+          }
+          echo("Pre rolloutKanikoBuildPush #2")
+          rolloutKanikoBuildPush("rollout-java", env.IMAGE_TAG, "${gcpProject}") {
+            checkout scm
+          }
         }
       }
     }
@@ -31,13 +34,13 @@ pipeline {
         beforeAgent true
         branch 'master'
       }
-      // options {
-      //   timeout(time: 60, unit: 'SECONDS') 
-      // }
       steps {
-        //input(message: "Should we deploy?", ok: "Deploy", submitterParameter: "APPROVER")
-        rollout-kubeDeploy("rollout-js", env.IMAGE_TAG, "${githubCredentialId}", "${repoOwner}")
-        rollout-kubeDeploy("rollout-java", env.IMAGE_TAG, "${githubCredentialId}", "${repoOwner}")
+        script{
+          echo("rolloutKubeDeploy #1")
+          rolloutKubeDeploy("rollout-js", env.IMAGE_TAG, "${githubCredentialId}", "${repoOwner}")
+          echo("rolloutKubeDeploy #2")
+          rolloutKubeDeploy("rollout-java", env.IMAGE_TAG, "${githubCredentialId}", "${repoOwner}")
+        } 
       }
     }   
   }
