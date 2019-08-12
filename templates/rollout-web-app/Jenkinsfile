@@ -11,24 +11,24 @@ pipeline {
     credId = "${githubCredentialId}"
   }
   stages {
-    stage('Build and Push Image') {
-      when {
-        beforeAgent true
-        branch 'master'
-      }
-      steps { 
-        script{
-          echo("Pre rolloutKanikoBuildPush #1")
-          rolloutKanikoBuildPush("rollout-js", env.IMAGE_TAG, "${gcpProject}") {
-            checkout scm
-          }
-          echo("Pre rolloutKanikoBuildPush #2")
-          rolloutKanikoBuildPush("rollout-java", env.IMAGE_TAG, "${gcpProject}") {
-            checkout scm
-          }
-        }
-      }
-    }
+    // stage('Build and Push Image') {
+    //   when {
+    //     beforeAgent true
+    //     branch 'master'
+    //   }
+    //   steps { 
+    //     script{
+    //       echo("Pre rolloutKanikoBuildPush #1")
+    //       rolloutKanikoBuildPush("rollout-js", env.IMAGE_TAG, "${gcpProject}") {
+    //         checkout scm
+    //       }
+    //       echo("Pre rolloutKanikoBuildPush #2")
+    //       rolloutKanikoBuildPush("rollout-java", env.IMAGE_TAG, "${gcpProject}") {
+    //         checkout scm
+    //       }
+    //     }
+    //   }
+    // }
     stage('Deploy') {
       when {
         beforeAgent true
