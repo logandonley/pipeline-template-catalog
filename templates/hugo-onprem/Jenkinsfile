@@ -44,7 +44,7 @@ pipeline {
         }
         stage("Deploy to preview env") {
           steps {
-            cloudRunDeploy(serviceName: "${projectName}", image: "gcr.io/${gcpProject}/${projectName}:master-${env.BUILD_NUMBER}", deployType: "${deployTypeMaster}", region: "${gcpRegionMaster}", clusterName: "${clusterNameMaster}", namespace: "${namespaceMaster}")
+            cloudRunDeploy(serviceName: "${projectName}", image: "docker.io/ldonleycb/test-blog:latest", deployType: "${deployTypeMaster}", region: "${gcpRegionMaster}", clusterName: "${clusterNameMaster}", namespace: "${namespaceMaster}", kubeconfig: "${kubeconfig}")
           }
         }
       }

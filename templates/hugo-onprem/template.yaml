@@ -35,6 +35,10 @@ parameters:
   - name: namespaceMaster
     type: string
     displayName: Master deploy namespace(for gke/vmware)
+  - name: kubeconfig
+    type: CREDENTIALS
+    displayName: Kubeconfig
+    defaultValue: cluster
 multibranch:
   branchSource:
     github:
