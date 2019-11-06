@@ -44,7 +44,9 @@ pipeline {
         // }
         stage("Deploy to preview env") {
           steps {
-            cloudRunDeploy(serviceName: "${projectName}", image: "docker.io/ldonleycb/test-blog:latest", deployType: "${deployTypeMaster}", region: "${gcpRegionMaster}", clusterName: "${clusterNameMaster}", namespace: "${namespaceMaster}", kubeconfig: "${kubeconfig}")
+            withCredentials([string(credentialsId: 'cluster', variable: 'KUBECONFIG')]) {
+              cloudRunDeploy(serviceName: "${projectName}", image: "docker.io/ldonleycb/test-blog:latest", deployType: "${deployTypeMaster}", region: "${gcpRegionMaster}", clusterName: "${clusterNameMaster}", namespace: "${namespaceMaster}", kubeconfig: "$KUBECONFIG")
+            }
           }
         }
       }
