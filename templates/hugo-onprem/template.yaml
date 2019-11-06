@@ -1,6 +1,6 @@
 version: 1
 type: pipeline-template
-name: Hugo Pipeline
+name: Hugo on-prem Pipeline
 templateType: MULTIBRANCH
 description: Build and deploy your hugo application.
 parameters:
