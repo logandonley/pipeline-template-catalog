@@ -1,0 +1,89 @@
+library 'cb-days@cr'
+def hugoPodYaml = libraryResource 'podtemplates/hugo/pod.yml'
+def cloudRunYaml = libraryResource 'podtemplates/cloud-run.yml'
+pipeline {
+  agent none
+  options { 
+    buildDiscarder(logRotator(numToKeepStr: '2'))
+    skipDefaultCheckout true
+    preserveStashes(buildCount: 2)
+  }
+  environment {
+    repoOwner = "${repoOwner}"
+    credId = "${githubCredentialId}"
+  }
+  stages {
+    stage('Preview environment') {
+      agent {
+        kubernetes {
+          label 'hugo-builder'
+          yaml hugoPodYaml
+        }
+      }
+      when {
+        beforeAgent true
+        branch 'pr-*'
+      }
+      stages {
+        stage("Build site") {
+          steps {
+            checkout scm
+            container('hugo') {
+              sh "hugo"
+              stash name: "public", includes: "public/**"
+            }
+          }
+        }
+        stage("Build and push image") {
+          steps {
+            kanikoBuildPushGeneric("${projectName}", "${BRANCH_NAME.toLowerCase()}", "${gcpProject}"){
+              checkout scm
+              unstash "public"
+            }
+          }
+        }
+        stage("Deploy to preview env") {
+          steps {
+            cloudRunDeploy(serviceName: "${projectName}-${BRANCH_NAME.toLowerCase()}", image: "gcr.io/${gcpProject}/${projectName}:${BRANCH_NAME.toLowerCase()}", deployType: "${deployTypePR}", region: "${gcpRegionPR}", clusterName: "${clusterNamePR}", namespace: "${namespacePR}")
+          }
+        }
+      }
+    }
+    stage('Master build & deploy') {
+      agent {
+        kubernetes {
+          label 'hugo-builder'
+          yaml hugoPodYaml
+        }
+      }
+      when {
+        beforeAgent true
+        branch 'master'
+      }
+      stages {
+        stage("Build site") {
+          steps {
+            checkout scm
+            container('hugo') {
+              sh "hugo"
+              stash name: "public", includes: "public/**"
+            }
+          }
+        }
+        stage("Build and push image") {
+          steps {
+            kanikoBuildPushGeneric("${projectName}", "master-${env.BUILD_NUMBER}", "${gcpProject}"){
+              checkout scm
+              unstash "public"
+            }
+          }
+        }
+        stage("Deploy to preview env") {
+          steps {
+            cloudRunDeploy(serviceName: "${projectName}", image: "gcr.io/${gcpProject}/${projectName}:master-${env.BUILD_NUMBER}", deployType: "${deployTypeMaster}", region: "${gcpRegionMaster}", clusterName: "${clusterNameMaster}", namespace: "${namespaceMaster}")
+          }
+        }
+      }
+    }   
+  }
+}
