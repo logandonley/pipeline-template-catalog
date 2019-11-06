@@ -34,14 +34,14 @@ pipeline {
             }
           }
         }
-        stage("Build and push image") {
-          steps {
-            kanikoBuildPushGeneric("${projectName}", "master-${env.BUILD_NUMBER}", "${gcpProject}"){
-              checkout scm
-              unstash "public"
-            }
-          }
-        }
+        // stage("Build and push image") {
+        //   steps {
+        //     kanikoBuildPushGeneric("${projectName}", "master-${env.BUILD_NUMBER}", "${gcpProject}"){
+        //       checkout scm
+        //       unstash "public"
+        //     }
+        //   }
+        // }
         stage("Deploy to preview env") {
           steps {
             cloudRunDeploy(serviceName: "${projectName}", image: "docker.io/ldonleycb/test-blog:latest", deployType: "${deployTypeMaster}", region: "${gcpRegionMaster}", clusterName: "${clusterNameMaster}", namespace: "${namespaceMaster}", kubeconfig: "${kubeconfig}")
