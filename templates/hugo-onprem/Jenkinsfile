@@ -36,7 +36,6 @@ pipeline {
         }
         stage("Build and push image") {
           steps {
-            sleep(300)
             kanikoBuildPushGeneric("${projectName}", "master-${env.BUILD_NUMBER}", "${gcpProject}"){
               checkout scm
               unstash "public"
