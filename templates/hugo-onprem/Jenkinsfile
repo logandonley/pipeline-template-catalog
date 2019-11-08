@@ -34,14 +34,14 @@ pipeline {
             }
           }
         }
-        // stage("Build and push image") {
-        //   steps {
-        //     kanikoBuildPushGeneric("${projectName}", "master-${env.BUILD_NUMBER}", "${gcpProject}"){
-        //       checkout scm
-        //       unstash "public"
-        //     }
-        //   }
-        // }
+        stage("Build and push image") {
+          steps {
+            kanikoBuildPushGeneric("${projectName}", "master-${env.BUILD_NUMBER}", "${gcpProject}"){
+              checkout scm
+              unstash "public"
+            }
+          }
+        }
         stage("Deploy to preview env") {
           steps {
             withCredentials([string(credentialsId: 'cluster', variable: 'KUBECONFIG')]) {
