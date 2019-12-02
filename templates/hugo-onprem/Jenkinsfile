@@ -3,7 +3,7 @@ def hugoPodYaml = libraryResource 'podtemplates/hugo/pod.yml'
 def cloudRunYaml = libraryResource 'podtemplates/cloud-run.yml'
 pipeline {
   agent none
-  options { 
+  options {
     buildDiscarder(logRotator(numToKeepStr: '2'))
     skipDefaultCheckout true
     preserveStashes(buildCount: 2)
@@ -34,14 +34,14 @@ pipeline {
             }
           }
         }
-        // stage("Build and push image") {
-        //   steps {
-        //     kanikoBuildPushGeneric("${projectName}", "master-${env.BUILD_NUMBER}", "${gcpProject}"){
-        //       checkout scm
-        //       unstash "public"
-        //     }
-        //   }
-        // }
+        stage("Build and push image") {
+          steps {
+            kanikoBuildPushGeneric("${projectName}", "master-${env.BUILD_NUMBER}", "${gcpProject}"){
+              checkout scm
+              unstash "public"
+            }
+          }
+        }
         stage("Build and push image") {
           steps {
             echo "Build and push image to registry."
@@ -50,11 +50,11 @@ pipeline {
         stage("Deploy to preview env") {
           steps {
             withCredentials([string(credentialsId: 'cluster', variable: 'KUBECONFIG')]) {
-              cloudRunDeploy(serviceName: "${projectName}", image: "docker.io/ldonleycb/test-blog:latest", deployType: "${deployTypeMaster}", region: "${gcpRegionMaster}", clusterName: "${clusterNameMaster}", namespace: "${namespaceMaster}", kubeconfig: "$KUBECONFIG")
+              cloudRunDeploy(serviceName: "${projectName}", image: "gcr.io/${gcpProject}/${projectName}:master-${env.BUILD_NUMBER}", deployType: "${deployTypeMaster}", region: "${gcpRegionMaster}", clusterName: "${clusterNameMaster}", namespace: "${namespaceMaster}", kubeconfig: "$KUBECONFIG")
             }
           }
         }
       }
-    }   
+    }
   }
 }
