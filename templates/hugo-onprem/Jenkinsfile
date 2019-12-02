@@ -42,11 +42,6 @@ pipeline {
             }
           }
         }
-        stage("Build and push image") {
-          steps {
-            echo "Build and push image to registry."
-          }
-        }
         stage("Deploy to preview env") {
           steps {
             withCredentials([string(credentialsId: 'cluster', variable: 'KUBECONFIG')]) {
