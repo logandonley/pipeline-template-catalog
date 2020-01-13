@@ -21,9 +21,7 @@ pipeline {
       steps {
             checkout scm           
             container('python3') {
-              sh """
-              python manage.py test
-              """
+              sh 'python manage.py test'
             }
       } 
     }
