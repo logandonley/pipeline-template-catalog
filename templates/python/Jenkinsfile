@@ -1,6 +1,5 @@
 library 'cb-days@master'
---def testPodYaml = libraryResource 'podtemplates/nodejs-app/web-test-pod.yml'
---def loadTestPodYaml = libraryResource 'podtemplates/nodejs-app/load-test-pod.yml'
+def testPodYaml = libraryResource 'podtemplates/python/python-test-pod.yml'
 pipeline {
   agent none
   options { 
@@ -12,18 +11,21 @@ pipeline {
     repoOwner = "${repoOwner}"
     credId = "${githubCredentialId}"
   }
-  stages {
-    stage('Python Tests') {
+  stage('Python Tests') {
       agent {
         kubernetes {
-          --label 'nodejs-testcafe'
-          --yaml testPodYaml
+          label 'python'
+          yaml testPodYaml
        }
       }
       steps {
-       python manage.py test
-      }
-     } 
+            checkout scm           
+            container('python3') {
+              sh """
+              python manage.py test
+              """
+            }
+      } 
     }
     stage('Build and Push Image') {
       when {
@@ -32,9 +34,8 @@ pipeline {
       }
       steps {  
         echo "${repoOwner}"
-        --pip install pipenv
-        --pipenv install
-        containerBuildPushGeneric("python-app", "${repoOwner.toLowerCase()}-${env.BUILD_NUMBER}", "${gcpProject}") {
+        containerBuildPushGeneric("python-app", "${repoOwner.toLowerCase()}-${env.BUILD_NUMBER}", "${gcpProject}")
+        {
           checkout scm
         }
       }
@@ -43,19 +44,6 @@ pipeline {
           echo "${JOB_NAME} pipeline job is awaiting approval at: ${RUN_DISPLAY_URL}"
         }
       }
-    }
-    stage('Deploy') {
-      when {
-        beforeAgent true
-        branch 'master'
-      }
-      options {
-        timeout(time: 90, unit: 'SECONDS') 
-      }
-      steps {
-        input(message: "Should we deploy?", ok: "Deploy", submitterParameter: "APPROVER")
-        kubeDeploy(env.IMAGE_NAME, env.IMAGE_TAG, "${githubCredentialId}", "${repoOwner}")
-      }
-    }   
+    }  
   }
 }
