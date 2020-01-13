@@ -23,13 +23,11 @@ pipeline {
       steps {
             checkout scm           
             container('python3') {
-              sh '''''
-                 python3 -m venv env
-                 source ./env/bin/activate 
-                 python -m pip install pipenv
+              sh '''
+                 python -m pip install --user pipenv
                  pipenv install
                  python manage.py test
-                 '''''
+                 '''
             }
       } 
     }
