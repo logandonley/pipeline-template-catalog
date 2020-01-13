@@ -16,13 +16,13 @@ pipeline {
     stage('VueJS Tests') {
       agent {
         kubernetes {
-          label 'python'
+          label 'nodejs'
           yaml testPodYaml
        }
       }
       steps {
             checkout scm           
-            container('python3') {
+            container('nodejs') {
               sh '''
                  yarn install
                  yarn test:unit
