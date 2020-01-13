@@ -13,7 +13,7 @@ pipeline {
   }
   stages('Python Test and Build')
   {
-  stage('Python Tests') {
+  /*stage('Python Tests') {
       agent {
         kubernetes {
           label 'python'
@@ -30,11 +30,11 @@ pipeline {
                  '''
             }
       } 
-    }
+    }*/
     stage('Build and Push Image') {
       when {
         beforeAgent true
-        branch 'master'
+        //branch 'master'
       }
       steps {  
         echo "${repoOwner}"
