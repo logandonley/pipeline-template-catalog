@@ -23,9 +23,11 @@ pipeline {
       steps {
             checkout scm           
             container('python3') {
-              sh '''pip install pipenv --user
+              sh '''
+                 sudo pip install pipenv
                  pipenv install
-                 python manage.py test'''
+                 python manage.py test
+                 '''
             }
       } 
     }
