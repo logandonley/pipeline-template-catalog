@@ -1,5 +1,5 @@
 library 'cb-days@TJ'
-def testPodYaml = libraryResource 'podtemplates/python/python-test-pod.yml'
+def testPodYaml = libraryResource 'podtemplates/python/python-test-pod.yaml'
 pipeline {
   agent none
   options { 
