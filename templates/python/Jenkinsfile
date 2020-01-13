@@ -32,10 +32,10 @@ pipeline {
       } 
     }*/
     stage('Build and Push Image') {
-      when {
-        beforeAgent true
+      //when {
+        //beforeAgent true
         //branch 'master'
-      }
+     // }
       steps {  
         echo "${repoOwner}"
         containerBuildPushGeneric("python-app", "${repoOwner.toLowerCase()}-${env.BUILD_NUMBER}", "${gcpProject}")
