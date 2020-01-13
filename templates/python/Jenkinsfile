@@ -11,6 +11,8 @@ pipeline {
     repoOwner = "${repoOwner}"
     credId = "${githubCredentialId}"
   }
+  stages('Python Test and Build')
+  {
   stage('Python Tests') {
       agent {
         kubernetes {
@@ -44,4 +46,5 @@ pipeline {
       }
     }  
   }
+}
 
