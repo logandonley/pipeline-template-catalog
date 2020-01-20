@@ -24,6 +24,7 @@ pipeline {
             checkout scm           
             container('python3') {
               sh '''
+                 whoami
                  pip install -r requirements.txt --user --no-cache-dir
                  python manage.py test
                  '''
