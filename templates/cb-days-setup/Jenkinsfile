@@ -38,7 +38,7 @@ pipeline {
             git init
             git config user.email "deployBot@cb-sa.io"
             git config user.name "${githubUsername}"
-            git remote add origin https://${githubUsername}:${githubPAT}@github.com/${githubOrg}/$core-config-bundle.git
+            git remote add origin https://${githubUsername}:${githubPAT}@github.com/${githubOrg}/core-config-bundle.git
             git pull origin master
             sed -i.bak 's#REPLACE_WITH_JENKINS_ENCODED_PAT#${encryptedPAT}#' jenkins.yaml
             sed -i.bak 's#REPLACE_WITH_YOUR_GITHUB_USERNAME#${githubUsername}#' jenkins.yaml
