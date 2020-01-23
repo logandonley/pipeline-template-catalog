@@ -24,9 +24,9 @@ pipeline {
         echo "GitHub Username:  ${githubUsername}"
         echo "GitHub Organization: ${githubOrg}"
         sh(script: """
-          curl --silent -H "Authorization: token $gitHubPAT" --data '{"organization":"${githubOrg}"}' https://api.github.com/repos/cloudbees-days/core-config-bundle/forks
-          curl --silent -H "Authorization: token $gitHubPAT" --data '{"organization":"${githubOrg}"}' https://api.github.com/repos/cloudbees-days/microblog-frontend/forks
-          curl --silent -H "Authorization: token $gitHubPAT" --data '{"organization":"${githubOrg}"}' https://api.github.com/repos/cloudbees-days/microblog-backend/forks
+          curl --silent -H "Authorization: token $githubPAT" --data '{"organization":"${githubOrg}"}' https://api.github.com/repos/cloudbees-days/core-config-bundle/forks
+          curl --silent -H "Authorization: token $githubPAT" --data '{"organization":"${githubOrg}"}' https://api.github.com/repos/cloudbees-days/microblog-frontend/forks
+          curl --silent -H "Authorization: token $githubPAT" --data '{"organization":"${githubOrg}"}' https://api.github.com/repos/cloudbees-days/microblog-backend/forks
          """)
       }
     }
