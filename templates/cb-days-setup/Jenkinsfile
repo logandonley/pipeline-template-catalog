@@ -7,7 +7,7 @@
 */
 library 'cb-days@master'
 def masterName = System.properties.'MASTER_NAME'
-dev encryptedPAT = new hudson.util.Secret(githubPAT).getEncryptedValue()
+def encryptedPAT = new hudson.util.Secret(githubPAT).getEncryptedValue()
 def entrySecret = UUID.randomUUID().toString()
 def podYaml = libraryResource 'podtemplates/kubeDeploy.yml'
 
