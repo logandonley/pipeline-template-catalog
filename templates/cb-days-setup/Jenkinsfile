@@ -1,0 +1,58 @@
+/*
+* 1. Generate config bundle based on user's GitHub PAT.
+*    a. Jenkins credentials for GitHub global config and Pipeline Multibranch projects.
+*    b. GitHub  global config with support for managing webhooks.
+* 2. Create/clone user specific CB Days repos - core-config-bundle, apps?
+* 3. Copy config bundle to CJOC.
+*/
+library 'cb-days@master'
+def masterName = System.properties.'MASTER_NAME'
+dev encryptedPAT = new hudson.util.Secret(githubPAT).getEncryptedValue()
+def entrySecret = UUID.randomUUID().toString()
+def podYaml = libraryResource 'podtemplates/kubeDeploy.yml'
+
+pipeline {
+  agent {
+    kubernetes {
+      label 'kubectl'
+      yaml podYaml
+    }
+  }
+  stages {
+    stage('Fork Repos') {
+      steps {
+        echo "GitHub Username:  ${githubUsername}"
+        echo "GitHub Organization: ${githubOrg}"
+        sh(script: """
+          curl --silent -H "Authorization: token $gitHubPAT" --data '{"organization":"${githubOrg}"}' https://api.github.com/repos/cloudbees-days/core-config-bundle/forks
+          curl --silent -H "Authorization: token $gitHubPAT" --data '{"organization":"${githubOrg}"}' https://api.github.com/repos/cloudbees-days/microblog-frontend/forks
+          curl --silent -H "Authorization: token $gitHubPAT" --data '{"organization":"${githubOrg}"}' https://api.github.com/repos/cloudbees-days/microblog-backend/forks
+         """)
+      }
+    }
+    stage('Create Config Bundle') {
+      steps {
+        echo "master name:  ${masterName}"
+        echo "encrypted token: ${encryptedPAT}"
+        sh(script: """
+            git init
+            git config user.email "deployBot@cb-sa.io"
+            git config user.name "${githubUsername}"
+            git remote add origin https://${githubUsername}:${githubPAT}@github.com/${githubOrg}/$core-config-bundle.git
+            git pull origin master
+            sed -i.bak 's#REPLACE_WITH_JENKINS_ENCODED_PAT#${encryptedPAT}#' jenkins.yaml
+            sed -i.bak 's#REPLACE_WITH_YOUR_GITHUB_USERNAME#${githubUsername}#' jenkins.yaml
+            git add *
+            git commit -a -m 'updating ${githubOrg}/core-config bundle with encrypted GitHub PAT and GitHub Username'
+            git push -u origin master
+        """)
+        container('kubectl') {
+          sh "mkdir ${masterName}"
+          sh "cp *.yaml ${masterName}"
+          sh "kubectl cp --namespace core ${masterName} cjoc-0:/var/jenkins_home/jcasc-bundles-store/"
+          sh "kubectl exec --namespace core cjoc-0 -- sed -i \"/<\\/access>/i\\<entry><string>${masterName}</string><hudson.util.Secret>${entrySecret}</hudson.util.Secret></entry>\"  /var/jenkins_home/jcasc-bundles-store/security.xml"
+        }
+      }
+    }
+  }
+}

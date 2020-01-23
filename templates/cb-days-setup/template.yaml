@@ -1,0 +1,14 @@
+version: 1
+type: pipeline-template
+name: CloudBees Days Set-up
+description: Automates set-up for CloudBees Days Workshop 
+parameters:
+  - name: githubUsername
+    type: string
+    displayName: GitHub User Name
+  - name: githubOrg
+    type: string
+    displayName: GitHub Organization Name
+  - name: githubPAT
+    displayName: GitHub Personal Access Token
+    type: string
