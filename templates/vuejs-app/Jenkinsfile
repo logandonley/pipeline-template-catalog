@@ -16,13 +16,13 @@ pipeline {
     stage('VueJS Tests') {
       agent {
         kubernetes {
-          label 'python'
+          label 'nodejs'
           yaml testPodYaml
        }
       }
       steps {
             checkout scm           
-            container('python3') {
+            container('nodejs') {
               sh '''
                  yarn install
                  yarn test:unit
@@ -42,10 +42,18 @@ pipeline {
           checkout scm
         }
       }
-      post {
-        success {
-          echo "${JOB_NAME} pipeline job is awaiting approval at: ${RUN_DISPLAY_URL}"
-        }
+    }
+    stage('Deploy'){
+      when {
+        beforeAgent true
+        branch 'master'
+      }
+      options {
+        timeout(time: 90, unit: 'SECONDS') 
+      }
+      steps {
+        input(message: "Should we deploy?", ok: "Deploy", submitterParameter: "APPROVER")
+        blogKubeDeploy(env.IMAGE_NAME, "${gcpProject}", "${githubCredentialId}", "${repoOwner}")
       }
     }  
   }
