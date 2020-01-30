@@ -25,7 +25,6 @@ pipeline {
             container('python3') {
               sh '''
                  pipenv install --system
-                 python manage.py test
                  '''
             }
       } 
@@ -37,7 +36,7 @@ pipeline {
       }
       steps {  
         echo "${repoOwner}"
-        containerBuildPushGeneric("python-app", "${repoOwner.toLowerCase()}-${env.BUILD_NUMBER}", "${gcpProject}")
+        imgBuildNexus("python-app", "${repoOwner.toLowerCase()}-${env.BUILD_NUMBER}")
         {
           checkout scm
         }
