@@ -14,9 +14,13 @@ parameters:
   - name: githubCredentialId
     displayName: GitHub Credential ID
     type: CREDENTIALS
+  - name: gcpProject
+    type: string
+    displayName: GCP Project
+    defaultValue: core-workshop
   - name: registry
     type: string
-    displayName: Docker registry
+    displayName: Docker Registry
     defaultValue: docker.cb-demos.io
 multibranch:
   branchSource:
