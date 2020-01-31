@@ -34,9 +34,11 @@ pipeline {
         beforeAgent true
         branch 'master'
       }
-      steps {  
-        version = readFile "./version.txt"
-        echo "${version}"
+      steps { 
+        script {
+          env.VERSION = readFile 'version.txt'
+        }
+        echo "${env.VERSION}"
         imgBuildNexus("microblog-backend", "${repoOwner}", "${registry}", "${env.BUILD_NUMBER}")
         {
           checkout scm
