@@ -36,7 +36,7 @@ pipeline {
       }
       steps {  
         echo "${repoOwner}"
-        imgBuildNexus("python-app", "${repoOwner.toLowerCase()}-${env.BUILD_NUMBER}")
+        imgBuildNexus("microblog-frontend", "${repoOwner}", "${registry}", "${env.BUILD_NUMBER}")
         {
           checkout scm
         }
