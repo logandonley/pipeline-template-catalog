@@ -35,8 +35,9 @@ pipeline {
         branch 'master'
       }
       steps {  
-        echo "${repoOwner}"
-        imgBuildNexus("microblog-frontend", "${repoOwner}", "${registry}", "${env.BUILD_NUMBER}")
+        def version = readFile "./version.txt"
+        echo "${version}"
+        imgBuildNexus("microblog-backend", "${repoOwner}", "${registry}", "${env.BUILD_NUMBER}")
         {
           checkout scm
         }
