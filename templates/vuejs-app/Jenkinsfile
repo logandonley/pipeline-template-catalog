@@ -35,9 +35,8 @@ pipeline {
         beforeAgent true
         branch 'master'
       }
-      steps {  
-        echo "${repoOwner}"
-        containerBuildPushGeneric("vuejs-app", "${repoOwner.toLowerCase()}-${env.BUILD_NUMBER}", "${gcpProject}")
+      steps { 
+        imgBuildNexus("microblog-frontend", "${repoOwner}", "${registry}")
         {
           checkout scm
         }
