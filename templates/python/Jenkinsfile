@@ -35,13 +35,13 @@ pipeline {
         branch 'master'
       }
       steps { 
-        script {
-          env.VERSION = readFile 'version.txt'
-        }
-        echo "${env.VERSION}"
         imgBuildNexus("microblog-backend", "${repoOwner}", "${registry}", "${env.BUILD_NUMBER}")
         {
           checkout scm
+          script {
+            env.VERSION = readFile 'version.txt'
+          }
+          echo "${env.VERSION}"
         }
       }
       post {
