@@ -35,7 +35,7 @@ pipeline {
         branch 'master'
       }
       steps {  
-        def version = readFile "./version.txt"
+        version = readFile "./version.txt"
         echo "${version}"
         imgBuildNexus("microblog-backend", "${repoOwner}", "${registry}", "${env.BUILD_NUMBER}")
         {
