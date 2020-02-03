@@ -12,3 +12,7 @@ parameters:
   - name: githubPAT
     displayName: GitHub Personal Access Token
     type: string
+  - name: coreNamespace
+    displayName: CloudBees Core Namespace
+    type: string
+    defaultValue: cloudbees-core

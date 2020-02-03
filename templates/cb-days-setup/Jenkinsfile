@@ -49,8 +49,8 @@ pipeline {
         container('kubectl') {
           sh "mkdir ${masterName}"
           sh "cp *.yaml ${masterName}"
-          sh "kubectl cp --namespace core ${masterName} cjoc-0:/var/jenkins_home/jcasc-bundles-store/"
-          sh "kubectl exec --namespace core cjoc-0 -- sed -i \"/<\\/access>/i\\<entry><string>${masterName}</string><hudson.util.Secret>${entrySecret}</hudson.util.Secret></entry>\"  /var/jenkins_home/jcasc-bundles-store/security.xml"
+          sh "kubectl cp --namespace ${coreNamespace} ${masterName} cjoc-0:/var/jenkins_home/jcasc-bundles-store/"
+          sh "kubectl exec --namespace ${coreNamespace} cjoc-0 -- sed -i \"/<\\/access>/i\\<entry><string>${masterName}</string><hudson.util.Secret>${entrySecret}</hudson.util.Secret></entry>\"  /var/jenkins_home/jcasc-bundles-store/security.xml"
         }
         echo "preparing Jenkins CLI for Master restart"
         sh 'curl -O http://managed-masters-ops.cje.svc.cluster.local/managed-masters-ops/jnlpJars/jenkins-cli.jar'
