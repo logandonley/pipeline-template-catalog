@@ -1,8 +1,8 @@
 /*
-* 1. Generate config bundle based on user's GitHub PAT.
+* 1. Create/clone user specific CB Days repos - core-config-bundle, apps?
+* 2. Generate config bundle based on user's Jenkins encrypted GitHub PAT.
 *    a. Jenkins credentials for GitHub global config and Pipeline Multibranch projects.
 *    b. GitHub  global config with support for managing webhooks.
-* 2. Create/clone user specific CB Days repos - core-config-bundle, apps?
 * 3. Copy config bundle to CJOC.
 */
 library 'cb-days@master'
@@ -51,6 +51,15 @@ pipeline {
           sh "cp *.yaml ${masterName}"
           sh "kubectl cp --namespace core ${masterName} cjoc-0:/var/jenkins_home/jcasc-bundles-store/"
           sh "kubectl exec --namespace core cjoc-0 -- sed -i \"/<\\/access>/i\\<entry><string>${masterName}</string><hudson.util.Secret>${entrySecret}</hudson.util.Secret></entry>\"  /var/jenkins_home/jcasc-bundles-store/security.xml"
+        }
+        echo "preparing Jenkins CLI for Master restart"
+        sh 'curl -O http://managed-masters-ops.cje.svc.cluster.local/managed-masters-ops/jnlpJars/jenkins-cli.jar'
+        withCredentials([usernamePassword(credentialsId: 'cli-username-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+          sh """
+            alias cli='java -jar jenkins-cli.jar -s \'http://cjoc/cjoc/\' -auth $USERNAME:$PASSWORD'
+            echo "Reprovision Master ${masterName}"
+            cli managed-master-reprovision ${masterName}
+          """
         }
       }
     }
