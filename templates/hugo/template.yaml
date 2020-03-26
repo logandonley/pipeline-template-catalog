@@ -1,8 +1,8 @@
 version: 1
 type: pipeline-template
-name: Hugo Pipeline
+name: Hugo App Multibranch Pipeline
 templateType: MULTIBRANCH
-description: Build and deploy your hugo application.
+description: Build, Test and Deploy your Standard Hugo Applications using a .hugo as the marker file. You must add a '.hugo' file to each branch you want built.
 parameters:
   - name: projectName
     type: string
