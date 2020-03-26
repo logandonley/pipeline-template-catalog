@@ -2,7 +2,7 @@ version: 1
 type: pipeline-template
 name: Vue.js App Multibranch Pipeline
 templateType: MULTIBRANCH
-description: Test, Build and Deploy for Standard Vue.js Applications. 
+description: Build, Test and Push Image for Standard Vue.js Applications. 
 parameters:
   - name: repoOwner
     type: string
