@@ -51,6 +51,9 @@ pipeline {
           cd ../../..
           helm upgrade --install ${username}-ff ./chart --set backend.ffKey=${cbffApiKey} --set backend.ingress.host=backend.${username}.${baseDomain} --set frontend.ingress.host=frontend.${username}.${baseDomain} --set backend.image.repository=${registry}/${username}/news-backend --set backend.image.tag=${env.BUILD_NUMBER} --set backend.imagePullSecrets[0].name=nexuscred --set frontend.image.repository=${registry}/${username}/news-frontend --set frontend.image.tag=${env.BUILD_NUMBER} --set frontend.imagePullSecrets[0].name=nexuscred
           """
+          echo "Your frontend endpoint: http://frontend.${username}.${baseDomain}"
+          echo "Your backend endpoint: http://backend.${username}.${baseDomain}"
+          echo "Pull content to backend by hitting the following endpoint: http://backend.${username}.${baseDomain}/run-helper"
         }
       }
     }
