@@ -1,4 +1,4 @@
-library 'cb-days@master'
+library 'cb-days@tf-overhaul'
 def testPodYaml = libraryResource 'podtemplates/python/python-test-pod.yml'
 pipeline {
   agent none
@@ -35,7 +35,7 @@ pipeline {
         branch 'master'
       }
       steps { 
-        imgBuildNexus("microblog-backend", "${repoOwner}", "${registry}")
+        kanikoBuildPushGeneric("microblog-backend", "latest", "${gcpProject}")
         {
           checkout scm
         }
