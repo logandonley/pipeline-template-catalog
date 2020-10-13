@@ -45,7 +45,7 @@ pipeline {
   }
   post {
     success {
-      cloudBeesFlowTriggerRelease configuration: 'ThunderCDEnv', parameters: '{"release":{"releaseName":"Wroble 2020.10.06","stages":[{"stageName":"Post Prod","stageValue":""},{"stageName":"Pre-Prod","stageValue":""},{"stageName":"Prod","stageValue":""},{"stageName":"Quality Assurance (QA)","stageValue":""},{"stageName":"Release Readiness","stageValue":""}],"pipelineName":"Wroble 2020.10.06","parameters":[{"parameterName":"FE-Build-number","parameterValue":""},{"parameterName":"BE-Build-number","parameterValue":""},{"parameterName":"microblog-backend_version","parameterValue":"1.0.2"},{"parameterName":"microblog-frontend_version","parameterValue":"1.1.3"},{"parameterName":"microblog-db_version","parameterValue":""}]}}', projectName: 'cwroble Demo', releaseName: 'Wroble 2020.10.06', startingStage: 'Release Readiness'
+      cloudBeesFlowTriggerRelease configuration: 'ThunderCDEnv', parameters: '{"release":{"releaseName":"Wroble 2020.10.06","stages":[{"stageName":"Post Prod","stageValue":""},{"stageName":"Pre-Prod","stageValue":""},{"stageName":"Prod","stageValue":""},{"stageName":"Quality Assurance (QA)","stageValue":""},{"stageName":"Release Readiness","stageValue":""}],"pipelineName":"Wroble 2020.10.06","parameters":[{"parameterName":"FE-Build-number","parameterValue":"1.1.3"},{"parameterName":"BE-Build-number","parameterValue":"1.0.2"},{"parameterName":"microblog-backend_version","parameterValue":""},{"parameterName":"microblog-frontend_version","parameterValue":""},{"parameterName":"microblog-db_version","parameterValue":"12.1-alpine"}]}}', projectName: 'cwroble Demo', releaseName: 'Wroble 2020.10.06', startingStage: 'Release Readiness'
     }
   }
     }
